@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>GPS Map Overlay</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css"/>
+  <style>html, body, #map { height: 100%; margin: 0; background: transparent; }</style>
+</head>
+<body>
+  <div id="map"></div>
+  <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"></script>
+  <script>
+    const map = L.map('map', { zoomControl: false, attributionControl: false });
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+    const marker = L.marker([0, 0]).addTo(map);
+
+    async function fetchCoords() {
+      const res = await fetch('coords.json');
+      const { lat, lon } = await res.json();
+      marker.setLatLng([lat, lon]);
+      map.setView([lat, lon], 16);
+    }
+    setInterval(fetchCoords, 5000);
+    fetchCoords();
+  </script>
+</body>
+</html>
